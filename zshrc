@@ -1,106 +1,88 @@
-# If you come from bash you might have to change your $PATH.
-# export PATH=$HOME/bin:/usr/local/bin:$PATH
+# History
+HISTFILE=~/.zsh_history
+HISTSIZE=10000
+SAVEHIST=10000
+setopt SHARE_HISTORY
+setopt HIST_IGNORE_DUPS
+setopt HIST_IGNORE_SPACE
 
-# Path to your oh-my-zsh installation.
-export ZSH=$HOME/.oh-my-zsh
+# Options
+setopt AUTO_CD
 
-# Set name of the theme to load. Optionally, if you set this to "random"
-# it'll load a random theme each time that oh-my-zsh is loaded.
-# See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
-ZSH_THEME="powerlevel9k/powerlevel9k"
+# History search with arrow keys
+autoload -Uz up-line-or-beginning-search down-line-or-beginning-search
+zle -N up-line-or-beginning-search
+zle -N down-line-or-beginning-search
+bindkey "^[[A" up-line-or-beginning-search
+bindkey "^[[B" down-line-or-beginning-search
 
-POWERLEVEL9K_MODE=nerdfont-complete
-POWERLEVEL9K_TIME_FORMAT='%D{%H:%M}'
-POWERLEVEL9K_VCS_GIT_ICON='\uf1d3'
-POWERLEVEL9K_VCS_GIT_GITHUB_ICON='\uf09b'
-POWERLEVEL9K_PROMPT_ON_NEWLINE=true
-POWERLEVEL9K_PROMPT_ADD_NEWLINE=true
-POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(host dir dir_writable vcs)
-POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status root_indicator background_jobs command_execution_time time)
+# Word navigation (Ctrl+←/→)
+bindkey "^[[1;5C" forward-word
+bindkey "^[[1;5D" backward-word
 
-# Set list of themes to load
-# Setting this variable when ZSH_THEME=random
-# cause zsh load theme from this variable instead of
-# looking in ~/.oh-my-zsh/themes/
-# An empty array have no effect
-# ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" )
+# Fzf history search (Ctrl+R)
+fzf-history-widget() {
+  local selected=$(fc -rln 1 | fzf --height 40% --reverse)
+  if [[ -n "$selected" ]]; then
+    LBUFFER="$selected"
+  fi
+  zle redisplay
+}
+zle -N fzf-history-widget
+bindkey "^R" fzf-history-widget
 
-# Uncomment the following line to use case-sensitive completion.
-# CASE_SENSITIVE="true"
+# Completion
+autoload -Uz compinit && compinit
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
+zstyle ':completion:*' menu select
+zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 
-# Uncomment the following line to use hyphen-insensitive completion. Case
-# sensitive completion must be off. _ and - will be interchangeable.
-# HYPHEN_INSENSITIVE="true"
+# Plugins (via Homebrew)
+source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
-# Uncomment the following line to disable bi-weekly auto-update checks.
-# DISABLE_AUTO_UPDATE="true"
+# PATH
+PATH="/opt/homebrew/bin:$PATH"
+PATH="/Users/leozhan/Applications/Visual Studio Code.app/Contents/Resources/app/bin:$PATH"
 
-# Uncomment the following line to change how often to auto-update (in days).
-# export UPDATE_ZSH_DAYS=13
+# Environment
+export HOMEBREW_CASK_OPTS="--appdir=/Users/leozhan/Applications"
+export USE_GKE_GCLOUD_AUTH_PLUGIN=True
 
-# Uncomment the following line to disable colors in ls.
-# DISABLE_LS_COLORS="true"
+# Modern CLI tools
+alias reload="source ~/.zshrc"
+alias zshhelp='bat ~/.dotfiles/zsh-help.md'
+alias ls='eza'
+alias l='eza -lbF --git'
+alias ll='eza -lbGF --git'
+alias la='eza -labF --git'
+alias cat='bat'
 
-# Uncomment the following line to disable auto-setting terminal title.
-# DISABLE_AUTO_TITLE="true"
-
-# Uncomment the following line to enable command auto-correction.
-# ENABLE_CORRECTION="true"
-
-# Uncomment the following line to display red dots whilst waiting for completion.
-# COMPLETION_WAITING_DOTS="true"
-
-# Uncomment the following line if you want to disable marking untracked files
-# under VCS as dirty. This makes repository status check for large repositories
-# much, much faster.
-# DISABLE_UNTRACKED_FILES_DIRTY="true"
-
-# Uncomment the following line if you want to change the command execution time
-# stamp shown in the history command output.
-# The optional three formats: "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
-# HIST_STAMPS="mm/dd/yyyy"
-
-# Would you like to use another custom folder than $ZSH/custom?
-# ZSH_CUSTOM=/path/to/new-custom-folder
-
-# Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
-# Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
-# Add wisely, as too many plugins slow down shell startup.
-plugins=(git zsh-syntax-highlighting zsh-autosuggestions)
-
-source $ZSH/oh-my-zsh.sh
-
-# User configuration
-
-# export MANPATH="/usr/local/man:$MANPATH"
-
-# You may need to manually set your language environment
-# export LANG=en_US.UTF-8
-
-# Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='mvim'
-# fi
-
-# Compilation flags
-# export ARCHFLAGS="-arch x86_64"
-
-# ssh
-# export SSH_KEY_PATH="~/.ssh/rsa_id"
-
-# Set personal aliases, overriding those provided by oh-my-zsh libs,
-# plugins, and themes. Aliases can be placed here, though oh-my-zsh
-# users are encouraged to define aliases within the ZSH_CUSTOM folder.
-# For a full list of active aliases, run `alias`.
-#
-# Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
-
+# Git
 alias git='LANG=en_GB git'
-alias ghclear='git branch --merged | egrep -v "(\\*|staging|testing|master|main)" | xargs git branch -d'
+alias ghclear='git pl && git fp && git branch --merged | egrep -v "(\\*|staging|testing|master|main)" | xargs git branch -d'
+alias ghbr='git switch $(git branch --format="%(if)%(HEAD)%(then)* %(else)  %(end)%(refname:short)" | fzf | sed "s/^..//")'
 
-source ~/.customrc
+# Kubernetes
+alias kc="kubectl"
+alias kcx="kubectx"
+alias kcns="kubens"
+kcsh() {
+  kubectl exec -it $1 -- sh
+}
+
+# Tools
+alias claude="$HOME/.claude/local/claude"
+
+# Google Cloud SDK
+[[ -f ~/google-cloud-sdk/path.zsh.inc ]] && source ~/google-cloud-sdk/path.zsh.inc
+[[ -f ~/google-cloud-sdk/completion.zsh.inc ]] && source ~/google-cloud-sdk/completion.zsh.inc
+
+# fnm (Fast Node Manager)
+eval "$(fnm env --use-on-cd)"
+
+# Local config
+[[ -f ~/.customrc ]] && source ~/.customrc
+
+# Starship prompt (must be at the end)
+eval "$(starship init zsh)"

@@ -11,16 +11,16 @@
 [alias]
 	fp = fetch -p
 	#############
-    br = branch
+	br = branch
 	brr = branch -r
 	#############
 	ci = commit
 	cim = commit -m
 	#############
-    co = checkout
+	co = checkout
 	cotb = checkout --track -b
 	#############
-    st = status
+	st = status
 	#############
 	df = diff
 	#############
@@ -32,9 +32,8 @@
 	plro = pull --rebase origin
 	#############
 	ps = push
-	pso = push origin
+	pso = push -u origin
 	psf = push --force-with-lease
-	psfo = push --force-with-lease origin
 	#############
 	rb = rebase
 	rbi = rebase -i

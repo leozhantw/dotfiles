@@ -1,5 +1,0 @@
-let g:netrw_dirhistmax  =10
-let g:netrw_dirhist_cnt =3
-let g:netrw_dirhist_1='/home/louisyang/confs/.tmux'
-let g:netrw_dirhist_2='/home/leozhan/.local'
-let g:netrw_dirhist_3='/home/leozhan/.config'
