@@ -1,26 +1,58 @@
-# Font
-font-family = JetBrains Mono
+# ─────────────── Font ───────────────
+font-family = JetBrainsMono Nerd Font Mono
+# CJK fallback（繁體中文）
+font-family = PingFang TC
 font-size = 18
+font-thicken = true
 
-# Window
-window-padding-x = 10
-window-padding-y = 10
-background-opacity = 0.95
-background-blur-radius = 20
-window-inherit-working-directory = false
-working-directory = home
-
-# Theme
+# ─────────────── Theme ───────────────
 theme = Nord
 
-# Cursor
+# ─────────────── Window ───────────────
+window-padding-x = 10
+window-padding-y = 10
+window-padding-balance = true
+window-inherit-working-directory = false
+working-directory = home
+window-save-state = always
+macos-titlebar-style = tabs
+background-opacity = 0.95
+background-blur = 20
+
+# ─────────────── Cursor ───────────────
 cursor-style = block
+cursor-style-blink = false
+mouse-hide-while-typing = true
 
-# Clipboard
+# ─────────────── Scrollback ───────────────
+scrollback-limit = 10000000
+
+# ─────────────── Clipboard ───────────────
 copy-on-select = clipboard
+clipboard-paste-protection = true
 
-# macOS
+# ─────────────── Splits ───────────────
+unfocused-split-opacity = 0.85
+
+# ─────────────── macOS ───────────────
 macos-option-as-alt = true
+quit-after-last-window-closed = true
 
-# Keybinds
+# ─────────────── Keybinds ───────────────
+# Claude Code / REPL 多行輸入
 keybind = shift+enter=text:\n
+
+# iTerm2 肌肉記憶：Cmd+D 垂直分割、Cmd+Shift+D 水平分割
+keybind = cmd+d=new_split:right
+keybind = cmd+shift+d=new_split:down
+keybind = cmd+shift+enter=toggle_split_zoom
+keybind = cmd+alt+left=goto_split:left
+keybind = cmd+alt+right=goto_split:right
+keybind = cmd+alt+up=goto_split:up
+keybind = cmd+alt+down=goto_split:down
+
+# iTerm2 hotkey window → Ghostty quick terminal（Cmd+`）
+keybind = global:cmd+grave_accent=toggle_quick_terminal
+
+# 重新載入設定
+keybind = cmd+shift+r=reload_config

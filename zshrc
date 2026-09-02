@@ -1,3 +1,11 @@
+# Homebrew (Apple Silicon: /opt/homebrew, Intel: /usr/local)
+if [[ -x /opt/homebrew/bin/brew ]]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+elif [[ -x /usr/local/bin/brew ]]; then
+  eval "$(/usr/local/bin/brew shellenv)"
+fi
+BREW_PREFIX="${HOMEBREW_PREFIX:-/usr/local}"
+
 # History
 HISTFILE=~/.zsh_history
 HISTSIZE=10000
@@ -38,16 +46,22 @@ zstyle ':completion:*' menu select
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 
 # Plugins (via Homebrew)
-source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+[[ -f "$BREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ]] \
+  && source "$BREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
+[[ -f "$BREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]] \
+  && source "$BREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
 
 # PATH
-PATH="/opt/homebrew/bin:$PATH"
-PATH="/Users/leozhan/Applications/Visual Studio Code.app/Contents/Resources/app/bin:$PATH"
+export PATH="$HOME/.local/bin:$PATH"
+[[ -d "$HOME/Applications/Visual Studio Code.app" ]] \
+  && export PATH="$HOME/Applications/Visual Studio Code.app/Contents/Resources/app/bin:$PATH"
 
 # Environment
-export HOMEBREW_CASK_OPTS="--appdir=/Users/leozhan/Applications"
+export HOMEBREW_CASK_OPTS="--appdir=$HOME/Applications"
 export USE_GKE_GCLOUD_AUTH_PLUGIN=True
+
+# Claude Code: 停用 alt-screen 閃爍
+export CLAUDE_CODE_NO_FLICKER=1
 
 # Modern CLI tools
 alias reload="source ~/.zshrc"
@@ -72,17 +86,22 @@ kcsh() {
 }
 
 # Tools
-alias claude="$HOME/.claude/local/claude"
+[[ -x "$HOME/.claude/local/claude" ]] && alias claude="$HOME/.claude/local/claude"
+
+# Bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+[[ -s "$BUN_INSTALL/_bun" ]] && source "$BUN_INSTALL/_bun"
 
 # Google Cloud SDK
 [[ -f ~/google-cloud-sdk/path.zsh.inc ]] && source ~/google-cloud-sdk/path.zsh.inc
 [[ -f ~/google-cloud-sdk/completion.zsh.inc ]] && source ~/google-cloud-sdk/completion.zsh.inc
 
 # fnm (Fast Node Manager)
-eval "$(fnm env --use-on-cd)"
+command -v fnm >/dev/null && eval "$(fnm env --use-on-cd)"
 
 # Local config
 [[ -f ~/.customrc ]] && source ~/.customrc
 
 # Starship prompt (must be at the end)
-eval "$(starship init zsh)"
+command -v starship >/dev/null && eval "$(starship init zsh)"
